@@ -145,8 +145,6 @@ npm run format
 🧾 Generación de reportes y dashboard de ventas
 
 
----
-
 ## 👨‍💻 Autor
 
 **Francisco Leonardo Arano Herrera**  
