@@ -148,11 +148,11 @@ npm run format
 ## 👨‍💻 Autor
 
 **Francisco Leonardo Arano Herrera**  
-💼 *Fullstack Developer — NestJS • React • PostgreSQL*  
+💼 Fullstack Developer — NestJS • React • PostgreSQL  
 📍 Cancún, México  
 
-[LinkedIn](https://www.linkedin.com/in/francisco-leonardo-arano-herrera-540198169)
+[LinkedIn](https://www.linkedin.com/in/francisco-leonardo-arano-herrera-540198169)  
 [GitHub](https://github.com/FLAranoHerrera)
 
-
+---
 
