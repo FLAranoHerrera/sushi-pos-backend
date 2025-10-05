@@ -152,7 +152,6 @@ npm run format
 📍 Cancún, México  
 
 [LinkedIn](https://www.linkedin.com/in/francisco-leonardo-arano-herrera-540198169)  
-[GitHub](https://github.com/FLAranoHerrera)
 
----
+[GitHub](https://github.com/FLAranoHerrera)
 
