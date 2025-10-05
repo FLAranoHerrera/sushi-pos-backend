@@ -153,6 +153,6 @@ npm run format
 💼 *Fullstack Developer — NestJS • React • PostgreSQL*  
 📍 Cancún, México  
 
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/FLAranoHerrera)  
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/francisco-leonardo-arano-herrera-540198169)
+[![LinkedIn](https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/linkedin.svg)](https://www.linkedin.com/in/francisco-leonardo-arano-herrera-540198169)
+[![GitHub](https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/github.svg)](https://github.com/FLAranoHerrera)
 
