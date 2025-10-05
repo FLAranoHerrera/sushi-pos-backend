@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/ChatGPT Image 5 oct 2025, 01_34_13 p.m..png" alt="Sushi POS Backend Banner" width="800"/>
+  <img src="./assets/banner-sushi-pos.png" alt="Sushi POS Backend Banner" width="800"/>
 </p>
 
 <div align="center">    
