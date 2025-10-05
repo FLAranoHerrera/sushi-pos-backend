@@ -105,5 +105,5 @@ npm run format
 Francisco Leonardo Arano Herrera
 💼 Fullstack Developer | NestJS • React • PostgreSQL
 📍 Cancún, México
-🌐 GitHub
-💼 LinkedIn
+🌐 [GitHub](https://github.com/FLAranoHerrera) 
+💼 [LinkedIn](https://www.linkedin.com/in/francisco-leonardo-arano-herrera-540198169)
