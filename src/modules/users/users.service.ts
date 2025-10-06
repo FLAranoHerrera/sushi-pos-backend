@@ -15,28 +15,32 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const { email, password, role } = createUserDto;
+  const { email, password, role } = createUserDto;
 
-    const existingUser = await this.userRepository.findOne({ where: { email } });
-    if (existingUser) throw new ConflictException('El correo ya está registrado.');
+  const existingUser = await this.userRepository.findOne({ where: { email } });
+  if (existingUser) throw new ConflictException('El correo ya está registrado.');
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Buscar rol por nombre o asignar 'user' por defecto
-    const roleEntity =
-      (role && (await this.roleRepository.findOne({ where: { name: role } }))) ||
-      (await this.roleRepository.findOne({ where: { name: 'user' } }));
-
-    if (!roleEntity) throw new NotFoundException(`Rol '${role || 'user'}' no encontrado.`);
-
-    const newUser = this.userRepository.create({
-      ...createUserDto,
-      password: hashedPassword,
-      role: roleEntity,
-    });
-
-    return this.userRepository.save(newUser);
+  // No permitir crear ADMIN arbitrariamente
+  if (role?.toUpperCase() === 'ADMIN') {
+    throw new BadRequestException('No se puede asignar rol ADMIN al crear un usuario.');
   }
+
+  const roleEntity =
+    (role && (await this.roleRepository.findOne({ where: { name: role.toUpperCase() } }))) ||
+    (await this.roleRepository.findOne({ where: { name: 'USER' } }));
+
+  if (!roleEntity) throw new NotFoundException(`Rol '${role || 'USER'}' no encontrado.`);
+
+  const newUser = this.userRepository.create({
+    ...createUserDto,
+    password: hashedPassword,
+    role: roleEntity,
+  });
+
+  return this.userRepository.save(newUser);
+}
 
   async findByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findOne({ where: { email }, relations: ['role'] });
@@ -84,4 +88,19 @@ export class UsersService {
     await this.userRepository.remove(user);
     return { message: `Usuario con ID ${id} eliminado correctamente.` };
   }
+
+  async updateRole(id: string, role: string) {
+  const user = await this.userRepository.findOne({ where: { id }, relations: ['role'] });
+  if (!user) throw new NotFoundException('Usuario no encontrado.');
+
+  if (role.toUpperCase() === 'ADMIN') {
+    throw new BadRequestException('No se puede asignar rol ADMIN manualmente.');
+  }
+
+  const roleEntity = await this.roleRepository.findOne({ where: { name: role.toUpperCase() } });
+  if (!roleEntity) throw new NotFoundException(`Rol '${role}' no encontrado.`);
+
+  user.role = roleEntity;
+  return this.userRepository.save(user);
+}
 }

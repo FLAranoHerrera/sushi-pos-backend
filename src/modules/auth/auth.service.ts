@@ -14,7 +14,7 @@ export class AuthService {
   ) {}
 
 async signup(dto: SignupAuthDto) {
-  const createUserDto: CreateUserDto = { ...dto, role: 'cliente' };
+  const createUserDto: CreateUserDto = { ...dto, role: 'USER' };
   const user = await this.usersService.create(createUserDto);
   return {
     message: 'Usuario registrado correctamente',
@@ -27,7 +27,7 @@ async login(dto: LoginAuthDto) {
   const isPasswordValid = await bcrypt.compare(dto.password, user.password);
   if (!isPasswordValid) throw new UnauthorizedException('Credenciales inválidas');
 
-  const payload = { sub: user.id, email: user.email, role: user.role?.name || 'cliente' };
+  const payload = { sub: user.id, email: user.email, role: user.role?.name || 'USER' };
   const token = this.jwtService.sign(payload);
 
   return { message: 'Inicio de sesión exitoso', token, user };

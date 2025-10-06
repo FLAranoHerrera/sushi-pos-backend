@@ -9,13 +9,15 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('signup')
-  @ApiOperation({ summary: 'Registrar un nuevo usuario' })
-  @ApiResponse({ status: 201, description: 'Usuario registrado correctamente' })
-  @ApiResponse({ status: 400, description: 'Datos inválidos' })
-  async signup(@Body() dto: SignupAuthDto) {
-    return this.authService.signup(dto);
-  }
+@Post('signup')
+@ApiOperation({ summary: 'Registrar un nuevo usuario' })
+@ApiResponse({ status: 201, description: 'Usuario registrado correctamente' })
+@ApiResponse({ status: 400, description: 'Datos inválidos' })
+async signup(@Body() dto: SignupAuthDto) {
+  // Forzamos rol 'USER' para cualquier registro público
+  return this.authService.signup({ ...dto, role: 'USER' });
+}
+
 
   @Post('login')
   @HttpCode(HttpStatus.OK)

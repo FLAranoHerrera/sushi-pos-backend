@@ -22,7 +22,7 @@ export class CreateUserDto {
   password: string;
 
   @ApiProperty({
-    example: 'admin',
+    example: 'user',
     description: 'Nombre del rol que se asignará al usuario (por defecto: "user")',
   })
   @IsString()

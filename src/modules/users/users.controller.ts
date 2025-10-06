@@ -1,50 +1,51 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorators';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
-import { User } from './entities/user.entity';
 
-@ApiTags('Users')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  // Solo ADMIN puede crear empleados
   @Post()
-  @ApiOperation({ summary: 'Crear un nuevo usuario' })
-  @ApiResponse({ status: 201, description: 'Usuario creado correctamente', type: User })
+  @Roles('ADMIN')
   create(@Body() dto: CreateUserDto) {
     return this.usersService.create(dto);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Obtener todos los usuarios' })
-  @ApiResponse({ status: 200, description: 'Lista de usuarios', type: [User] })
+  @Roles('ADMIN')
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Obtener un usuario por ID' })
-  @ApiParam({ name: 'id', description: 'ID del usuario', type: 'string' })
-  @ApiResponse({ status: 200, description: 'Usuario encontrado', type: User })
+  @Roles('ADMIN', 'USER')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Actualizar un usuario por ID' })
-  @ApiParam({ name: 'id', description: 'ID del usuario', type: 'string' })
-  @ApiResponse({ status: 200, description: 'Usuario actualizado', type: User })
+  @Roles('ADMIN', 'USER')
   update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     return this.usersService.update(id, dto);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Eliminar un usuario por ID' })
-  @ApiParam({ name: 'id', description: 'ID del usuario', type: 'string' })
-  @ApiResponse({ status: 200, description: 'Usuario eliminado correctamente' })
+  @Roles('ADMIN')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  // Nuevo endpoint: cambiar rol de un usuario (solo ADMIN)
+  @Put(':id/role')
+  @Roles('ADMIN')
+  async updateRole(@Param('id') id: string, @Body('role') role: string) {
+    return this.usersService.updateRole(id, role);
   }
 }

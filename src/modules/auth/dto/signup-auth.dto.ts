@@ -15,6 +15,6 @@ export class SignupAuthDto {
   @MinLength(6)
   password: string;
 
-  @ApiProperty({ example: 'cliente', description: 'Rol asignado al usuario (opcional)', required: false })
+  @ApiProperty({ example: 'usuario', description: 'Rol asignado al usuario (opcional)', required: false })
   role?: string;
 }
