@@ -17,16 +17,18 @@ export class SubcategoriesService {
     const category = await this.categoryRepo.findOne({ where: { id: dto.categoryId } });
     if (!category) throw new NotFoundException('Categoría no encontrada');
 
-    const subcategory = this.subcategoryRepo.create({
-      name: dto.name,
-      category,
-    });
-
+    const subcategory = this.subcategoryRepo.create({ name: dto.name, category });
     return this.subcategoryRepo.save(subcategory);
   }
 
-  async findAll(): Promise<Subcategory[]> {
-    return this.subcategoryRepo.find({ relations: ['category', 'products'] });
+  async findAll(page = 1, limit = 10): Promise<{ data: Subcategory[]; total: number; page: number; limit: number }> {
+    limit = Math.min(limit, 50);
+    const [subcategories, total] = await this.subcategoryRepo.findAndCount({
+      relations: ['category', 'products'],
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    return { data: subcategories, total, page, limit };
   }
 
   async findOne(id: string): Promise<Subcategory> {

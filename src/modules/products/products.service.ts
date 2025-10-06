@@ -16,38 +16,24 @@ export class ProductsService {
     @InjectRepository(Extra) private readonly extraRepo: Repository<Extra>,
   ) {}
 
-  // Crear producto
   async create(dto: CreateProductDto): Promise<Product> {
-    if (!isUUID(dto.subcategoryId)) {
-      throw new BadRequestException('El ID de la subcategoría debe ser un UUID válido');
-    }
+    if (!isUUID(dto.subcategoryId)) throw new BadRequestException('El ID de la subcategoría debe ser un UUID válido');
 
     const subcategory = await this.subcategoryRepo.findOne({ where: { id: dto.subcategoryId } });
     if (!subcategory) throw new NotFoundException('Subcategoría no encontrada');
 
     let extras: Extra[] = [];
     if (dto.extrasIds?.length) {
-      // Filtramos solo UUID válidos
       const validExtrasIds = dto.extrasIds.filter(id => isUUID(id));
-      extras = validExtrasIds.length
-        ? await this.extraRepo.find({ where: { id: In(validExtrasIds) } })
-        : [];
+      extras = validExtrasIds.length ? await this.extraRepo.find({ where: { id: In(validExtrasIds) } }) : [];
     }
 
-    const product = this.productRepo.create({
-      ...dto,
-      subcategory,
-      extras,
-    });
-
+    const product = this.productRepo.create({ ...dto, subcategory, extras });
     return this.productRepo.save(product);
   }
 
-  // Actualizar producto
   async update(id: string, dto: UpdateProductDto): Promise<Product> {
-    if (!isUUID(id)) {
-      throw new BadRequestException('El ID del producto debe ser un UUID válido');
-    }
+    if (!isUUID(id)) throw new BadRequestException('El ID del producto debe ser un UUID válido');
 
     const product = await this.productRepo.findOne({ where: { id }, relations: ['subcategory', 'extras'] });
     if (!product) throw new NotFoundException('Producto no encontrado');
@@ -61,21 +47,23 @@ export class ProductsService {
 
     if (dto.extrasIds) {
       const validExtrasIds = dto.extrasIds.filter(id => isUUID(id));
-      product.extras = validExtrasIds.length
-        ? await this.extraRepo.find({ where: { id: In(validExtrasIds) } })
-        : [];
+      product.extras = validExtrasIds.length ? await this.extraRepo.find({ where: { id: In(validExtrasIds) } }) : [];
     }
 
     Object.assign(product, dto);
     return this.productRepo.save(product);
   }
 
-  // Obtener todos los productos
-  async findAll(): Promise<Product[]> {
-    return this.productRepo.find({ relations: ['subcategory', 'extras'] });
+  async findAll(page = 1, limit = 10): Promise<{ data: Product[]; total: number; page: number; limit: number }> {
+    limit = Math.min(limit, 50);
+    const [products, total] = await this.productRepo.findAndCount({
+      relations: ['subcategory', 'extras'],
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    return { data: products, total, page, limit };
   }
 
-  // Obtener un producto por ID
   async findOne(id: string): Promise<Product> {
     if (!isUUID(id)) throw new BadRequestException('El ID del producto debe ser un UUID válido');
 
@@ -84,7 +72,6 @@ export class ProductsService {
     return product;
   }
 
-  // Eliminar producto
   async remove(id: string): Promise<void> {
     if (!isUUID(id)) throw new BadRequestException('El ID del producto debe ser un UUID válido');
 

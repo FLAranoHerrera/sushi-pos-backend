@@ -1,16 +1,22 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { Role } from './entities/roles.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorators';
 
 @ApiTags('Roles')
+@ApiBearerAuth('access-token')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post()
+  @Roles('ADMIN')
   @ApiOperation({ summary: 'Crear un rol' })
   @ApiResponse({ status: 201, description: 'Rol creado correctamente.', type: Role })
   create(@Body() dto: CreateRoleDto) {
@@ -18,6 +24,7 @@ export class RolesController {
   }
 
   @Get()
+  @Roles('ADMIN')
   @ApiOperation({ summary: 'Obtener todos los roles' })
   @ApiResponse({ status: 200, description: 'Lista de roles', type: [Role] })
   findAll() {
@@ -25,6 +32,7 @@ export class RolesController {
   }
 
   @Get(':id')
+  @Roles('ADMIN')
   @ApiOperation({ summary: 'Obtener un rol por ID' })
   @ApiParam({ name: 'id', description: 'ID del rol', type: 'string' })
   @ApiResponse({ status: 200, description: 'Rol encontrado', type: Role })
@@ -34,6 +42,7 @@ export class RolesController {
   }
 
   @Put(':id')
+  @Roles('ADMIN')
   @ApiOperation({ summary: 'Actualizar un rol por ID' })
   @ApiParam({ name: 'id', description: 'ID del rol', type: 'string' })
   @ApiResponse({ status: 200, description: 'Rol actualizado', type: Role })
@@ -42,6 +51,7 @@ export class RolesController {
   }
 
   @Delete(':id')
+  @Roles('ADMIN')
   @ApiOperation({ summary: 'Eliminar un rol por ID' })
   @ApiParam({ name: 'id', description: 'ID del rol', type: 'string' })
   @ApiResponse({ status: 200, description: 'Rol eliminado correctamente' })

@@ -16,8 +16,14 @@ export class CategoriesService {
     return this.categoryRepo.save(category);
   }
 
-  async findAll(): Promise<Category[]> {
-    return this.categoryRepo.find({ relations: ['subcategories'] });
+  async findAll(page = 1, limit = 10): Promise<{ data: Category[]; total: number; page: number; limit: number }> {
+    limit = Math.min(limit, 50);
+    const [categories, total] = await this.categoryRepo.findAndCount({
+      relations: ['subcategories'],
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    return { data: categories, total, page, limit };
   }
 
   async findOne(id: string): Promise<Category> {

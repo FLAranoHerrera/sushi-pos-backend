@@ -15,32 +15,30 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-  const { email, password, role } = createUserDto;
+    const { email, password, role } = createUserDto;
+    const existingUser = await this.userRepository.findOne({ where: { email } });
+    if (existingUser) throw new ConflictException('El correo ya está registrado.');
 
-  const existingUser = await this.userRepository.findOne({ where: { email } });
-  if (existingUser) throw new ConflictException('El correo ya está registrado.');
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+    if (role?.toUpperCase() === 'ADMIN') {
+      throw new BadRequestException('No se puede asignar rol ADMIN al crear un usuario.');
+    }
 
-  // No permitir crear ADMIN arbitrariamente
-  if (role?.toUpperCase() === 'ADMIN') {
-    throw new BadRequestException('No se puede asignar rol ADMIN al crear un usuario.');
+    const roleEntity =
+      (role && (await this.roleRepository.findOne({ where: { name: role.toUpperCase() } }))) ||
+      (await this.roleRepository.findOne({ where: { name: 'USER' } }));
+
+    if (!roleEntity) throw new NotFoundException(`Rol '${role || 'USER'}' no encontrado.`);
+
+    const newUser = this.userRepository.create({
+      ...createUserDto,
+      password: hashedPassword,
+      role: roleEntity,
+    });
+
+    return this.userRepository.save(newUser);
   }
-
-  const roleEntity =
-    (role && (await this.roleRepository.findOne({ where: { name: role.toUpperCase() } }))) ||
-    (await this.roleRepository.findOne({ where: { name: 'USER' } }));
-
-  if (!roleEntity) throw new NotFoundException(`Rol '${role || 'USER'}' no encontrado.`);
-
-  const newUser = this.userRepository.create({
-    ...createUserDto,
-    password: hashedPassword,
-    role: roleEntity,
-  });
-
-  return this.userRepository.save(newUser);
-}
 
   async findByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findOne({ where: { email }, relations: ['role'] });
@@ -48,9 +46,15 @@ export class UsersService {
     return user;
   }
 
-  async findAll(): Promise<Partial<User>[]> {
-    const users = await this.userRepository.find({ relations: ['role'] });
-    return users.map(({ password, ...rest }) => rest);
+  async findAll(page = 1, limit = 10): Promise<{ data: Partial<User>[]; total: number; page: number; limit: number }> {
+    limit = Math.min(limit, 50); // límite máximo
+    const [users, total] = await this.userRepository.findAndCount({
+      relations: ['role'],
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    const data = users.map(({ password, ...rest }) => rest);
+    return { data, total, page, limit };
   }
 
   async findOne(id: string): Promise<Partial<User>> {
@@ -61,26 +65,19 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.findOne({
-      where: { id },
-      relations: ['role'],
-    });
+    const user = await this.userRepository.findOne({ where: { id }, relations: ['role'] });
     if (!user) throw new NotFoundException('Usuario no encontrado.');
 
     if (updateUserDto.role) {
-      const roleEntity = await this.roleRepository.findOne({
-        where: { name: updateUserDto.role },
-      });
+      const roleEntity = await this.roleRepository.findOne({ where: { name: updateUserDto.role } });
       if (!roleEntity) throw new NotFoundException(`Rol '${updateUserDto.role}' no encontrado.`);
       user.role = roleEntity;
       delete updateUserDto.role;
     }
 
     Object.assign(user, updateUserDto);
-
     return this.userRepository.save(user);
   }
-
 
   async remove(id: string): Promise<{ message: string }> {
     const user = await this.userRepository.findOne({ where: { id } });
@@ -90,17 +87,17 @@ export class UsersService {
   }
 
   async updateRole(id: string, role: string) {
-  const user = await this.userRepository.findOne({ where: { id }, relations: ['role'] });
-  if (!user) throw new NotFoundException('Usuario no encontrado.');
+    const user = await this.userRepository.findOne({ where: { id }, relations: ['role'] });
+    if (!user) throw new NotFoundException('Usuario no encontrado.');
 
-  if (role.toUpperCase() === 'ADMIN') {
-    throw new BadRequestException('No se puede asignar rol ADMIN manualmente.');
+    if (role.toUpperCase() === 'ADMIN') {
+      throw new BadRequestException('No se puede asignar rol ADMIN manualmente.');
+    }
+
+    const roleEntity = await this.roleRepository.findOne({ where: { name: role.toUpperCase() } });
+    if (!roleEntity) throw new NotFoundException(`Rol '${role}' no encontrado.`);
+
+    user.role = roleEntity;
+    return this.userRepository.save(user);
   }
-
-  const roleEntity = await this.roleRepository.findOne({ where: { name: role.toUpperCase() } });
-  if (!roleEntity) throw new NotFoundException(`Rol '${role}' no encontrado.`);
-
-  user.role = roleEntity;
-  return this.userRepository.save(user);
-}
 }

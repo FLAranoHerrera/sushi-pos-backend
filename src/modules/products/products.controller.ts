@@ -1,16 +1,22 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorators';
 
 @ApiTags('Products')
+@ApiBearerAuth('access-token')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
+  @Roles('ADMIN')
   @ApiOperation({ summary: 'Crear un nuevo producto' })
   @ApiBody({ type: CreateProductDto })
   @ApiResponse({ status: 201, description: 'Producto creado exitosamente', type: Product })
@@ -19,13 +25,17 @@ export class ProductsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Obtener todos los productos' })
-  @ApiResponse({ status: 200, description: 'Lista de productos', type: [Product] })
-  findAll(): Promise<Product[]> {
-    return this.productsService.findAll();
+  @Roles('ADMIN', 'USER')
+  @ApiOperation({ summary: 'Obtener todos los productos con paginación' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiResponse({ status: 200, description: 'Listado paginado de productos', type: [Product] })
+  findAll(@Query('page') page = 1, @Query('limit') limit = 10) {
+    return this.productsService.findAll(+page, +limit);
   }
 
   @Get(':id')
+  @Roles('ADMIN', 'USER')
   @ApiOperation({ summary: 'Obtener un producto por ID' })
   @ApiParam({ name: 'id', description: 'UUID del producto' })
   @ApiResponse({ status: 200, description: 'Producto encontrado', type: Product })
@@ -34,6 +44,7 @@ export class ProductsController {
   }
 
   @Put(':id')
+  @Roles('ADMIN')
   @ApiOperation({ summary: 'Actualizar un producto por ID' })
   @ApiParam({ name: 'id', description: 'UUID del producto' })
   @ApiBody({ type: UpdateProductDto })
@@ -43,6 +54,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @Roles('ADMIN')
   @ApiOperation({ summary: 'Eliminar un producto por ID' })
   @ApiParam({ name: 'id', description: 'UUID del producto' })
   @ApiResponse({ status: 200, description: 'Producto eliminado exitosamente' })

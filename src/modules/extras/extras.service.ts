@@ -16,8 +16,14 @@ export class ExtrasService {
     return this.extraRepo.save(extra);
   }
 
-  async findAll(): Promise<Extra[]> {
-    return this.extraRepo.find({ relations: ['products'] });
+  async findAll(page = 1, limit = 10): Promise<{ data: Extra[]; total: number; page: number; limit: number }> {
+    limit = Math.min(limit, 50);
+    const [extras, total] = await this.extraRepo.findAndCount({
+      relations: ['products'],
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    return { data: extras, total, page, limit };
   }
 
   async findOne(id: string): Promise<Extra> {
