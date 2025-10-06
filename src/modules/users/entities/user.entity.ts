@@ -14,6 +14,7 @@ export class User {
   email: string;
 
   @Column()
+  @ApiProperty( { example: 'strongPassword123', description: 'Contraseña del usuario' } )
   password: string;
 
   @Column()

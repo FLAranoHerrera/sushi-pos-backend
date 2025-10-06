@@ -1,11 +1,21 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Subcategory } from '../../subcategories/entities/subcategory.entity';
+import { Category } from '../../categories/entities/category.entity';
 import { Extra } from '../../extras/entities/extra.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 @Entity('products')
 export class Product {
-  @ApiProperty({ example: 'f3d6a43b-9f41-4d23-9b8b-2a8b3e49b8a1' })
+  @ApiProperty({ example: 'uuid generado automáticamente' })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -18,7 +28,7 @@ export class Product {
   price: number;
 
   @ApiProperty({ example: 25, description: 'Cantidad disponible en stock' })
-  @Column({ type: 'int'})
+  @Column({ type: 'int' })
   stock: number;
 
   @ApiPropertyOptional({ example: 'Rollo de sushi con salmón y aguacate', description: 'Descripción del producto' })
@@ -33,9 +43,13 @@ export class Product {
   @Column({ nullable: true })
   imageUrl: string;
 
-  @ApiProperty({ type: () => Subcategory, description: 'Subcategoría a la que pertenece el producto' })
-  @ManyToOne(() => Subcategory, (sub) => sub.products, { eager: true, nullable: false })
-  subcategory: Subcategory;
+  @ApiPropertyOptional({ type: () => Subcategory, description: 'Subcategoría a la que pertenece el producto' })
+  @ManyToOne(() => Subcategory, (sub) => sub.products, { eager: true, nullable: true })
+  subcategory?: Subcategory;
+
+  @ApiPropertyOptional({ type: () => Category, description: 'Categoría del producto (para Extras y Merchandising)' })
+  @ManyToOne(() => Category, { eager: true, nullable: true })
+  category?: Category;
 
   @ApiProperty({ type: () => [Extra], description: 'Extras asociados al producto', required: false })
   @ManyToMany(() => Extra, (extra) => extra.products, { eager: true, cascade: true })

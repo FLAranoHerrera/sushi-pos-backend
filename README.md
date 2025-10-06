@@ -144,14 +144,3 @@ npm run format
 🐳 Configuración de Docker Compose para entorno completo (API + DB)
 🧾 Generación de reportes y dashboard de ventas
 
-
-## 👨‍💻 Autor
-
-**Francisco Leonardo Arano Herrera**  
-💼 Fullstack Developer — NestJS • React • PostgreSQL  
-📍 Cancún, México  
-
-[LinkedIn](https://www.linkedin.com/in/francisco-leonardo-arano-herrera-540198169)  
-
-[GitHub](https://github.com/FLAranoHerrera)
-
