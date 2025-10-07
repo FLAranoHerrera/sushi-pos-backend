@@ -7,6 +7,7 @@ import { Extra } from '../extras/entities/extra.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { isUUID } from 'class-validator';
+import { CloudinaryService } from '../../common/services/cloudinary.service';
 
 @Injectable()
 export class ProductsService {
@@ -14,6 +15,7 @@ export class ProductsService {
     @InjectRepository(Product) private readonly productRepo: Repository<Product>,
     @InjectRepository(Subcategory) private readonly subcategoryRepo: Repository<Subcategory>,
     @InjectRepository(Extra) private readonly extraRepo: Repository<Extra>,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(dto: CreateProductDto): Promise<Product> {
@@ -77,5 +79,31 @@ export class ProductsService {
 
     const result = await this.productRepo.delete(id);
     if (result.affected === 0) throw new NotFoundException('Producto no encontrado');
+  }
+
+  async updateImage(id: string, file: Express.Multer.File): Promise<Product> {
+    if (!isUUID(id)) throw new BadRequestException('El ID del producto debe ser un UUID válido');
+
+    const product = await this.productRepo.findOne({ where: { id } });
+    if (!product) throw new NotFoundException('Producto no encontrado');
+
+    try {
+      // Subir nueva imagen a Cloudinary
+      const result = await this.cloudinaryService.uploadImage(file, 'sushi-pos/products');
+      
+      // Si el producto ya tenía una imagen, eliminar la anterior
+      if (product.imageUrl) {
+        const publicId = product.imageUrl.split('/').pop()?.split('.')[0];
+        if (publicId) {
+          await this.cloudinaryService.deleteImage(`sushi-pos/products/${publicId}`);
+        }
+      }
+
+      // Actualizar la URL de la imagen en la base de datos
+      product.imageUrl = result.secure_url;
+      return this.productRepo.save(product);
+    } catch (error) {
+      throw new BadRequestException('Error al subir la imagen: ' + error.message);
+    }
   }
 }

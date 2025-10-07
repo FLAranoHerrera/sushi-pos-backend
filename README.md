@@ -42,6 +42,7 @@ _Construido con **NestJS + PostgreSQL + TypeORM**, documentado con **Swagger**, 
 | 🗂️ **Categories / Subcategories** | Clasificación jerárquica de productos |
 | ➕ **Extras** | Adiciones opcionales en los productos |
 | 🧾 **Orders** | Creación y detalle de pedidos |
+| 📁 **Files** | Carga y gestión de imágenes con Cloudinary |
 
 ---
 
@@ -61,6 +62,14 @@ DB_NAME=sushipos_db
 JWT_SECRET=supersecreto123
 JWT_EXPIRES=1d
 
+# Cloudinary (para carga de imágenes)
+CLOUDINARY_CLOUD_NAME=tu_cloud_name
+CLOUDINARY_API_KEY=tu_api_key
+CLOUDINARY_API_SECRET=tu_api_secret
+
+# Frontend URL (opcional)
+FRONTEND_URL=http://localhost:3000
+
 
 🧠 Instalación y ejecución
 
@@ -75,7 +84,7 @@ npm install
 npm run start:dev
 
 # 4️⃣ Acceder a la documentación Swagger
-http://localhost:3000/api
+http://localhost:3000/docs
 
 
 📂 Estructura del proyecto
@@ -92,6 +101,13 @@ sushi-pos-backend/
 │   │   ├── extras/
 │   │   ├── products/
 │   │   └── orders/
+│   ├── common/
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── filters/
+│   │   ├── pipes/
+│   │   ├── interceptors/
+│   │   └── modules/
 │   ├── config/
 │   │   └── orm.config.ts
 │   ├── main.ts
@@ -122,6 +138,8 @@ User → Order → OrderItem
 | `POST` | `/products`    | Crear producto            |
 | `GET`  | `/orders/:id`  | Obtener orden por ID      |
 | `GET`  | `/extras`      | Listar extras disponibles |
+| `POST` | `/products/:id/image` | Subir imagen a producto |
+| `POST` | `/files/upload` | Subir imagen general |
 
 🧪 Scripts útiles
 
@@ -138,9 +156,44 @@ npm run start:prod
 npm run format
 
 
-🌱 Próximas mejoras
+## 🖼️ Carga de Imágenes
+
+El sistema incluye integración completa con **Cloudinary** para la gestión de imágenes:
+
+- ✅ **Subida de imágenes** a productos específicos
+- ✅ **Validación automática** de tipos y tamaños de archivo
+- ✅ **Optimización automática** de imágenes
+- ✅ **Gestión de carpetas** organizadas
+- ✅ **Eliminación automática** de imágenes anteriores
+
+### Endpoints de Imágenes:
+- `POST /api/products/{id}/image` - Subir imagen a producto
+- `POST /api/files/upload` - Subir imagen general
+
+---
+
+## 🌱 Próximas mejoras
+✅ ~~Integración con Cloudinary para carga de imágenes~~ **COMPLETADO**
 🚧 Implementación de seeders automáticos (categorías, productos, roles)
-📦 Integración con Cloudinary para carga de imágenes
 🐳 Configuración de Docker Compose para entorno completo (API + DB)
 🧾 Generación de reportes y dashboard de ventas
+📊 Sistema de inventario en tiempo real
+💳 Integración con sistemas de pago
+
+---
+
+## 👨‍💻 Autor
+
+**Francisco Leonardo Arano Herrera**
+
+Desarrollador Fullstack especializado en Backend con NestJS
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/francisco-leonardo-arano-herrera-540198169)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/FLAranoHerrera)
+
+**Stack Tecnológico:**
+- 🚀 **Backend**: Node.js, NestJS, TypeScript, PostgreSQL
+- 🎨 **Frontend**: React, HTML, CSS, JavaScript
+- ☁️ **Cloud**: Cloudinary, Docker, GitHub Actions
+- 🛠️ **Tools**: VSCode, Postman, Xcode, Git
 
