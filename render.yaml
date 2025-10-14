@@ -1,0 +1,53 @@
+# Render.com configuration for SushiPOS Backend with Docker
+services:
+  - type: web
+    name: sushi-pos-backend
+    env: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_HOST
+        fromDatabase:
+          name: sushi-pos-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: sushi-pos-db
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: sushi-pos-db
+          property: user
+      - key: DB_PASS
+        fromDatabase:
+          name: sushi-pos-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: sushi-pos-db
+          property: database
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES
+        value: 7d
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        value: https://sushi-pos.vercel.app
+
+databases:
+  - name: sushi-pos-db
+    plan: starter
+    databaseName: sushipos_db
+    user: sushipos_user
