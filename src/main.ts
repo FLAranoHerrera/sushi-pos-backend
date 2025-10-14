@@ -5,8 +5,19 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
 
 async function bootstrap() {
+  // Cargar archivo de entorno específico según el parámetro
+  const envFile = process.env.ENV_FILE || 'dev';
+  const envPath = path.resolve(process.cwd(), `.env.${envFile}`);
+  
+  console.log(`🔧 Cargando configuración desde: .env.${envFile}`);
+  
+  // Cargar variables de entorno
+  dotenv.config({ path: envPath });
+  
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 

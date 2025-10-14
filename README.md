@@ -52,22 +52,26 @@ El proyecto incluye archivos de configuración separados para desarrollo y produ
 
 ### **Desarrollo Local**
 ```bash
-# Usar configuración de desarrollo (PostgreSQL local)
-cp .env.dev .env
-npm run start:dev
+# Opción 1: Script automático
+./start-dev.sh
+
+# Opción 2: Manual
+ENV_FILE=dev npm run start:dev
 ```
 
 ### **Producción Local (con Neon)**
 ```bash
-# Usar configuración de producción (Neon DB)
-cp .env.prod .env
-npm run start:dev
+# Opción 1: Script automático
+./start-prod.sh
+
+# Opción 2: Manual
+ENV_FILE=prod npm run start:dev
 ```
 
 ### **Archivos de Configuración**
 - **`.env.dev`**: Configuración para desarrollo (PostgreSQL local)
 - **`.env.prod`**: Configuración para producción (Neon DB)
-- **`.env`**: Archivo temporal (se crea automáticamente)
+- **Sin archivos temporales**: La aplicación lee directamente los archivos específicos
 
 ### **Variables de Entorno**
 ```env

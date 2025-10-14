@@ -95,9 +95,11 @@ PORT=3000
 
 ### **Desarrollo Local**
 ```bash
-# Usar base de datos local
-cp .env.dev .env
-npm run start:dev
+# Opción 1: Script automático
+./start-dev.sh
+
+# Opción 2: Manual
+ENV_FILE=dev npm run start:dev
 
 # Probar conexión
 curl http://localhost:3000/api/health
@@ -105,9 +107,11 @@ curl http://localhost:3000/api/health
 
 ### **Producción Local (con Neon)**
 ```bash
-# Usar base de datos Neon
-cp .env.prod .env
-npm run start:dev
+# Opción 1: Script automático
+./start-prod.sh
+
+# Opción 2: Manual
+ENV_FILE=prod npm run start:dev
 
 # Probar conexión
 curl http://localhost:3000/api/health
@@ -116,13 +120,14 @@ curl http://localhost:3000/api/health
 ### **Configuración de Archivos de Entorno**
 ```bash
 # Para desarrollo
-cp .env.dev .env
+ENV_FILE=dev npm run start:dev
 
 # Para producción
-cp .env.prod .env
+ENV_FILE=prod npm run start:dev
 
 # Verificar configuración actual
-cat .env
+cat .env.dev    # Desarrollo
+cat .env.prod   # Producción
 ```
 
 ## 📊 Endpoints Disponibles
