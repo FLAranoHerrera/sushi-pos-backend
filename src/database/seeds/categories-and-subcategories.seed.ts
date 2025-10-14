@@ -6,13 +6,13 @@ export const seedCategoriesAndSubcategories = async (dataSource: DataSource) => 
   const categoryRepo = dataSource.getRepository(Category);
   const subcategoryRepo = dataSource.getRepository(Subcategory);
 
-  const categoriesCount = await categoryRepo.count();
-  if (categoriesCount > 0) {
+  console.log('🔄 Insertando categorías...');
+
+  // Verificar si ya existen categorías
+  const existingCategories = await categoryRepo.find();
+  if (existingCategories.length > 0) {
     console.log('⚠️ Categorías ya existen, se omite seeder.');
-    return {
-      categories: await categoryRepo.find(),
-      subcategories: await subcategoryRepo.find(),
-    };
+    return { categories: existingCategories, subcategories: [] };
   }
 
   // Crear categorías

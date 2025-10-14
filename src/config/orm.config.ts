@@ -20,7 +20,7 @@ export const typeOrmConfig = (configService: ConfigService): DataSourceOptions =
       type: 'postgres',
       url: databaseUrl,
       entities: [User, Role, Product, Order, OrderItem, Subcategory, Category, Extra],
-      synchronize: configService.get<string>('NODE_ENV') === 'development',
+      synchronize: false, // Deshabilitado en producción para mayor seguridad
       logging: configService.get<string>('NODE_ENV') === 'development' ? ['query', 'error', 'schema'] : ['error'],
       logger: 'advanced-console',
       ssl: {

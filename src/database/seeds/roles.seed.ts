@@ -9,19 +9,19 @@ export const seedRoles = async (dataSource: DataSource) => {
     { name: 'MESERO', description: 'Mesero del restaurante - POS y órdenes' },
   ];
 
+  console.log('🔄 Insertando roles...');
+
+  // Verificar si ya existen roles
   const existingRoles = await rolesRepository.find();
-  if (existingRoles.length === rolesData.length) {
+  if (existingRoles.length > 0) {
     console.log('⚠️ Roles ya existen, se omite seeder.');
     return existingRoles;
   }
 
   const roles: Role[] = [];
   for (const roleData of rolesData) {
-    let role = await rolesRepository.findOne({ where: { name: roleData.name } });
-    if (!role) {
-      role = rolesRepository.create(roleData);
-      await rolesRepository.save(role);
-    }
+    const role = rolesRepository.create(roleData);
+    await rolesRepository.save(role);
     roles.push(role);
   }
 
