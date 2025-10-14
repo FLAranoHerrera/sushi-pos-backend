@@ -2,12 +2,10 @@
 services:
   - type: web
     name: sushi-pos-backend
-    env: node
+    env: docker
     plan: starter
-    runtime: node20
-    buildCommand: npm install && npm run build
-    startCommand: npm run start:prod
-    healthCheckPath: /api/health
+    dockerfilePath: ./Dockerfile.render
+    healthCheckPath: /docs
     envVars:
       - key: NODE_ENV
         value: production
@@ -38,3 +36,12 @@ services:
         value: https://sushi-pos.vercel.app
       - key: PORT
         value: 3000
+      # Variables para seeders
+      - key: ADMIN_NAME
+        value: Administrador
+      - key: ADMIN_EMAIL
+        value: admin@sushi.com
+      - key: ADMIN_PASSWORD
+        value: admin123
+      - key: ADMIN_PHONE
+        value: 123456789

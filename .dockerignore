@@ -1,0 +1,65 @@
+# ===========================================
+# SUSHI POS BACKEND - DOCKER IGNORE
+# ===========================================
+
+# Dependencias
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de desarrollo
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Documentación
+README.md
+DEPLOYMENT.md
+ENV_SETUP.md
+
+# Scripts de desarrollo
+start-dev.sh
+start-prod.sh
+seed-dev.sh
+seed-prod.sh
+check-user.js
+clear-db.js
+
+# Archivos temporales
+*.tmp
+*.temp
+*.log
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Testing
+coverage
+.nyc_output
+
+# Build artifacts
+dist
+build
+
+# Logs
+logs
+*.log

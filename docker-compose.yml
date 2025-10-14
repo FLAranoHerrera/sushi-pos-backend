@@ -1,0 +1,93 @@
+# ===========================================
+# SUSHI POS BACKEND - DOCKER COMPOSE
+# ===========================================
+
+# Docker Compose version 3.8
+
+services:
+  # Base de datos PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: sushi-pos-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sushi_pos
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: frank24
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - sushi-pos-network
+
+  # Aplicación NestJS
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sushi-pos-app
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: frank24
+      DB_NAME: sushi_pos
+      JWT_SECRET: tu_jwt_secreto_super_seguro_aqui_desarrollo
+      JWT_EXPIRES: 7d
+      FRONTEND_URL: http://localhost:3001
+      PORT: 3000
+      # Stripe (Opcional - para pagos)
+      STRIPE_SECRET_KEY: sk_test_tu_stripe_secret_key
+      STRIPE_WEBHOOK_SECRET: whsec_tu_webhook_secret
+      # Variables de admin para seeders
+      ADMIN_NAME: Administrador
+      ADMIN_EMAIL: admin@sushi.com
+      ADMIN_PASSWORD: admin123
+      ADMIN_PHONE: 123456789
+    ports:
+      - "3001:3000"
+    depends_on:
+      - postgres
+    networks:
+      - sushi-pos-network
+    volumes:
+      - ./src:/app/src
+      - ./assets:/app/assets
+
+  # Seeder (ejecutar una sola vez)
+  seeder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sushi-pos-seeder
+    environment:
+      NODE_ENV: development
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: frank24
+      DB_NAME: sushi_pos
+      JWT_SECRET: tu_jwt_secreto_super_seguro_aqui_desarrollo
+      JWT_EXPIRES: 7d
+      ADMIN_NAME: Administrador
+      ADMIN_EMAIL: admin@sushi.com
+      ADMIN_PASSWORD: admin123
+      ADMIN_PHONE: 123456789
+    depends_on:
+      - postgres
+    networks:
+      - sushi-pos-network
+    command: ["node", "dist/database/seeds/run-seeds.js"]
+    profiles:
+      - seeder
+
+volumes:
+  postgres_data:
+
+networks:
+  sushi-pos-network:
+    driver: bridge

@@ -1,0 +1,62 @@
+# ===========================================
+# SUSHI POS BACKEND - DOCKER COMPOSE PRODUCCIÓN
+# ===========================================
+
+# Docker Compose version 3.8
+
+services:
+  # Aplicación NestJS para producción
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sushi-pos-app-prod
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES: ${JWT_EXPIRES:-7d}
+      FRONTEND_URL: ${FRONTEND_URL}
+      PORT: 3000
+      # Cloudinary
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      # Stripe
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      # Variables de admin para seeders
+      ADMIN_NAME: ${ADMIN_NAME:-Administrador}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@sushi.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      ADMIN_PHONE: ${ADMIN_PHONE:-123456789}
+    ports:
+      - "3000:3000"
+    networks:
+      - sushi-pos-network
+
+  # Seeder para producción (ejecutar una sola vez)
+  seeder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sushi-pos-seeder-prod
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES: ${JWT_EXPIRES:-7d}
+      ADMIN_NAME: ${ADMIN_NAME:-Administrador}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@sushi.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      ADMIN_PHONE: ${ADMIN_PHONE:-123456789}
+    networks:
+      - sushi-pos-network
+    command: ["node", "dist/database/seeds/run-seeds.js"]
+    profiles:
+      - seeder
+
+networks:
+  sushi-pos-network:
+    driver: bridge
