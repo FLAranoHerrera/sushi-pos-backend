@@ -6,6 +6,7 @@ services:
     plan: starter
     dockerfilePath: ./Dockerfile
     dockerContext: .
+    runtime: node20
     envVars:
       - key: NODE_ENV
         value: production

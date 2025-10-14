@@ -1,5 +1,5 @@
 # Dockerfile para Backend (NestJS)
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 
 # Instalar dependencias del sistema
 RUN apk add --no-cache dumb-init
@@ -27,7 +27,7 @@ COPY . .
 RUN npm run build
 
 # Etapa de producción
-FROM node:18-alpine AS production
+FROM node:20-alpine AS production
 RUN apk add --no-cache dumb-init
 WORKDIR /app
 
