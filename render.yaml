@@ -1,45 +1,40 @@
-# Render.com configuration for SushiPOS Backend with Docker
+# Render.com configuration for Sushi POS Backend
 services:
   - type: web
     name: sushi-pos-backend
-    env: docker
+    env: node
     plan: starter
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
     runtime: node20
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
-      - key: DB_HOST
+      - key: DATABASE_URL
         sync: false
-      - key: DB_PORT
-        value: 5432
-      - key: DB_USER
-        sync: false
-      - key: DB_PASS
-        sync: false
-      - key: DB_NAME
-        sync: false
+        # Configura esta variable con tu connection string de Neon
+        # Valor: postgresql://neondb_owner:npg_ZsFQVly60CIb@ep-steep-wind-adq9nyqz-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES
         value: 7d
       - key: CLOUDINARY_CLOUD_NAME
         sync: false
+        # Valor: dxifqh6xt
       - key: CLOUDINARY_API_KEY
         sync: false
+        # Valor: 629533663712939
       - key: CLOUDINARY_API_SECRET
         sync: false
+        # Valor: KA4UVtSo_s44AKeye1NG8LsYxek
       - key: STRIPE_SECRET_KEY
         sync: false
+        # Valor: sk_live_tu_stripe_secret_key
       - key: STRIPE_WEBHOOK_SECRET
         sync: false
+        # Valor: whsec_tu_webhook_secret
       - key: FRONTEND_URL
         value: https://sushi-pos.vercel.app
-
-# Base de datos externa (Neon)
-# databases:
-#   - name: sushi-pos-db
-#     plan: starter
-#     databaseName: sushipos_db
-#     user: sushipos_user
+      - key: PORT
+        value: 3000

@@ -10,18 +10,37 @@ import { Subcategory } from '../modules/subcategories/entities/subcategory.entit
 import { Category } from '../modules/categories/entities/category.entity';
 import { Extra } from '../modules/extras/entities/extra.entity';
 
-export const typeOrmConfig = (configService: ConfigService): DataSourceOptions => ({
-  type: 'postgres',
-  host: configService.get<string>('DB_HOST'),
-  port: configService.get<number>('DB_PORT'),
-  username: configService.get<string>('DB_USER'),
-  password: configService.get<string>('DB_PASS'),
-  database: configService.get<string>('DB_NAME'),
-  entities: [User, Role, Product, Order, OrderItem, Subcategory, Category, Extra],
-  synchronize: true,
-  logging: ['query', 'error', 'schema'],
-  logger: 'advanced-console',
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+export const typeOrmConfig = (configService: ConfigService): DataSourceOptions => {
+  // Verificar si tenemos DATABASE_URL (connection string) o variables individuales
+  const databaseUrl = configService.get<string>('DATABASE_URL');
+  
+  if (databaseUrl) {
+    // Usar connection string (recomendado para Neon)
+    return {
+      type: 'postgres',
+      url: databaseUrl,
+      entities: [User, Role, Product, Order, OrderItem, Subcategory, Category, Extra],
+      synchronize: configService.get<string>('NODE_ENV') === 'development',
+      logging: configService.get<string>('NODE_ENV') === 'development' ? ['query', 'error', 'schema'] : ['error'],
+      logger: 'advanced-console',
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    };
+  } else {
+    // Fallback a variables individuales (para desarrollo local)
+    return {
+      type: 'postgres',
+      host: configService.get<string>('DB_HOST'),
+      port: configService.get<number>('DB_PORT'),
+      username: configService.get<string>('DB_USERNAME'),
+      password: configService.get<string>('DB_PASSWORD'),
+      database: configService.get<string>('DB_NAME'),
+      entities: [User, Role, Product, Order, OrderItem, Subcategory, Category, Extra],
+      synchronize: configService.get<string>('NODE_ENV') === 'development',
+      logging: configService.get<string>('NODE_ENV') === 'development' ? ['query', 'error', 'schema'] : ['error'],
+      logger: 'advanced-console',
+      ssl: false, // No SSL para desarrollo local
+    };
+  }
+};

@@ -48,27 +48,51 @@ _Construido con **NestJS + PostgreSQL + TypeORM + Stripe**, documentado con **Sw
 
 ## ⚙️ Configuración del entorno
 
-Crea un archivo `.env` en la raíz del proyecto con las variables:
+El proyecto incluye archivos de configuración separados para desarrollo y producción:
 
+### **Desarrollo Local**
+```bash
+# Usar configuración de desarrollo (PostgreSQL local)
+cp .env.dev .env
+npm run start:dev
+```
+
+### **Producción Local (con Neon)**
+```bash
+# Usar configuración de producción (Neon DB)
+cp .env.prod .env
+npm run start:dev
+```
+
+### **Archivos de Configuración**
+- **`.env.dev`**: Configuración para desarrollo (PostgreSQL local)
+- **`.env.prod`**: Configuración para producción (Neon DB)
+- **`.env`**: Archivo temporal (se crea automáticamente)
+
+### **Variables de Entorno**
 ```env
-# Configuración de la base de datos
+# Base de Datos (desarrollo)
 DB_HOST=localhost
 DB_PORT=5432
-DB_USER=postgres
-DB_PASS=tu_password
-DB_NAME=sushipos_db
+DB_USERNAME=postgres
+DB_PASSWORD=tu_password
+DB_NAME=sushi_pos
+
+# Base de Datos (producción)
+DATABASE_URL=postgresql://usuario:password@host:5432/database?sslmode=require
 
 # JWT
-JWT_SECRET=supersecreto123
-JWT_EXPIRES=1d
+JWT_SECRET=tu_jwt_secreto_super_seguro_aqui
+JWT_EXPIRES=7d
 
 # Cloudinary (para carga de imágenes)
 CLOUDINARY_CLOUD_NAME=tu_cloud_name
 CLOUDINARY_API_KEY=tu_api_key
 CLOUDINARY_API_SECRET=tu_api_secret
 
-# Frontend URL (opcional)
-FRONTEND_URL=http://localhost:3000
+# URLs
+FRONTEND_URL=http://localhost:3001
+NODE_ENV=development
 
 
 🧠 Instalación y ejecución
