@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ROLES_KEY } from '../../auth/decorators/roles.decorators';
+import { ROLES_KEY } from '../decorators/roles.decorator';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -11,16 +11,23 @@ export class RolesGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    if (!requiredRoles) return true;
+
+    if (!requiredRoles) {
+      return true;
+    }
 
     const { user } = context.switchToHttp().getRequest();
-    if (!user) throw new ForbiddenException('Usuario no autenticado');
+    
+    if (!user) {
+      throw new ForbiddenException('Usuario no autenticado');
+    }
 
-    // Normalizamos a mayúsculas para coincidir con los roles del seeder
-    const userRole = user.role?.toUpperCase();
-    const allowed = requiredRoles.some((role) => role.toUpperCase() === userRole);
+    const hasRole = requiredRoles.some((role) => user.role?.name === role);
+    
+    if (!hasRole) {
+      throw new ForbiddenException(`Acceso denegado. Se requiere rol: ${requiredRoles.join(' o ')}`);
+    }
 
-    if (!allowed) throw new ForbiddenException('No tienes permisos para acceder a esta ruta');
     return true;
   }
 }

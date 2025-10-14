@@ -5,9 +5,8 @@ export const seedRoles = async (dataSource: DataSource) => {
   const rolesRepository = dataSource.getRepository(Role);
 
   const rolesData = [
-    { name: 'ADMIN', description: 'Administrador del sistema' },
-    { name: 'USER', description: 'Usuario regular' },
-    { name: 'MESERO', description: 'Mesero del restaurante' },
+    { name: 'ADMIN', description: 'Administrador del sistema - Acceso completo' },
+    { name: 'MESERO', description: 'Mesero del restaurante - POS y órdenes' },
   ];
 
   const existingRoles = await rolesRepository.find();

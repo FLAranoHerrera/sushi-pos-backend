@@ -7,6 +7,7 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProductsModule } from './modules/products/products.module';
 import { OrdersModule } from './modules/orders/orders.module';
+import { PaymentsModule } from './modules/payments/payments.module';
 import { typeOrmConfig } from './config/orm.config';
 import { RolesModule } from './modules/roles/roles.module';
 import { CategoriesModule } from './modules/categories/categories.module';
@@ -34,6 +35,7 @@ import { FilesModule } from './common/modules/files.module';
     AuthModule,
     ProductsModule,
     OrdersModule,
+    PaymentsModule,
     RolesModule,
     CategoriesModule,
     SubcategoriesModule,

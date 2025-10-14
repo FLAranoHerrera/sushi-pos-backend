@@ -46,6 +46,27 @@ export class UsersService {
     return user;
   }
 
+  async findByEmailSafe(email: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { email }, relations: ['role'] });
+  }
+
+  async createWithRole(data: { name: string; email: string; password: string; phone?: string; roleName: string }): Promise<User> {
+    const { name, email, password, phone, roleName } = data;
+    
+    const roleEntity = await this.roleRepository.findOne({ where: { name: roleName.toUpperCase() } });
+    if (!roleEntity) throw new NotFoundException(`Rol '${roleName}' no encontrado.`);
+
+    const newUser = this.userRepository.create({
+      name,
+      email,
+      password,
+      phone,
+      role: roleEntity,
+    });
+
+    return this.userRepository.save(newUser);
+  }
+
   async findAll(page = 1, limit = 10): Promise<{ data: Partial<User>[]; total: number; page: number; limit: number }> {
     limit = Math.min(limit, 50); // límite máximo
     const [users, total] = await this.userRepository.findAndCount({

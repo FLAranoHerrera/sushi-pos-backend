@@ -27,7 +27,7 @@ export class ProductsController {
   }
 
   @Get()
-  @Roles('ADMIN', 'USER')
+  @Roles('ADMIN', 'MESERO')
   @ApiOperation({ summary: 'Obtener todos los productos con paginación' })
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
@@ -37,7 +37,7 @@ export class ProductsController {
   }
 
   @Get(':id')
-  @Roles('ADMIN', 'USER')
+  @Roles('ADMIN', 'MESERO')
   @ApiOperation({ summary: 'Obtener un producto por ID' })
   @ApiParam({ name: 'id', description: 'UUID del producto' })
   @ApiResponse({ status: 200, description: 'Producto encontrado', type: Product })

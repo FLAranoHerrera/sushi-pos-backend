@@ -57,7 +57,15 @@ export class ProductsService {
   }
 
   async findAll(page = 1, limit = 10): Promise<{ data: Product[]; total: number; page: number; limit: number }> {
-    limit = Math.min(limit, 50);
+    // Si no se especifica límite o es 0, devolver todos los productos
+    if (limit === 0) {
+      const products = await this.productRepo.find({
+        relations: ['subcategory', 'extras'],
+      });
+      return { data: products, total: products.length, page: 1, limit: products.length };
+    }
+    
+    limit = Math.min(limit, 100); // Aumentar límite máximo a 100
     const [products, total] = await this.productRepo.findAndCount({
       relations: ['subcategory', 'extras'],
       skip: (page - 1) * limit,

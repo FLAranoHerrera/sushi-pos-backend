@@ -5,9 +5,9 @@
 <div align="center">    
 
 # 🍣 Sushi POS Backend  
-**Sistema de Punto de Venta para Restaurante Japonés**
+**API Backend del Sistema de Punto de Venta**
 
-_Construido con **NestJS + PostgreSQL + TypeORM**, documentado con **Swagger**, y diseñado con arquitectura modular, limpia y escalable._
+_Construido con **NestJS + PostgreSQL + TypeORM + Stripe**, documentado con **Swagger**, y diseñado con arquitectura modular, limpia y escalable._
 
 ![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
