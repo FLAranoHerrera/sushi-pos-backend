@@ -17,6 +17,8 @@ async function bootstrap() {
       'http://localhost:3001',
       'http://localhost:5173', // Vite dev server
       'http://localhost:4200', // Angular dev server
+      'https://sushi-pos-frontend.vercel.app', // Vercel production
+      'https://sushi-pos-frontend-npbn.vercel.app', // Vercel production (alternativo)
       configService.get<string>('FRONTEND_URL') || 'http://localhost:3000',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
