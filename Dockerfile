@@ -1,12 +1,16 @@
 # ===========================================
-# SUSHI POS BACKEND - DOCKERFILE
+# SUSHI POS BACKEND - DOCKERFILE PARA RENDER
 # ===========================================
 
-# Etapa 1: Construcción
-FROM node:20-alpine AS builder
+# Usar imagen base de Node.js
+FROM node:20-alpine
 
 # Establecer directorio de trabajo
 WORKDIR /app
+
+# Crear usuario no-root para seguridad
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nestjs -u 1001
 
 # Copiar archivos de dependencias
 COPY package*.json ./
@@ -20,27 +24,8 @@ COPY . .
 # Compilar la aplicación
 RUN npm run build
 
-# Etapa 2: Producción
-FROM node:20-alpine AS production
-
-# Crear usuario no-root para seguridad
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nestjs -u 1001
-
-# Establecer directorio de trabajo
-WORKDIR /app
-
-# Copiar archivos de dependencias
-COPY package*.json ./
-
-# Instalar solo dependencias de producción
+# Limpiar dependencias de desarrollo
 RUN npm ci --only=production && npm cache clean --force
-
-# Copiar aplicación compilada desde builder
-COPY --from=builder /app/dist ./dist
-
-# Copiar archivos necesarios
-COPY --from=builder /app/assets ./assets
 
 # Cambiar propietario de archivos
 RUN chown -R nestjs:nodejs /app
