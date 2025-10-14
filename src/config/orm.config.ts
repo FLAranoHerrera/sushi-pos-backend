@@ -21,4 +21,7 @@ export const typeOrmConfig = (configService: ConfigService): DataSourceOptions =
   synchronize: true,
   logging: ['query', 'error', 'schema'],
   logger: 'advanced-console',
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
