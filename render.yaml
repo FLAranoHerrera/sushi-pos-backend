@@ -4,7 +4,6 @@ services:
     name: sushi-pos-backend
     env: docker
     plan: starter
-    dockerfilePath: ./Dockerfile
     healthCheckPath: /docs
     envVars:
       - key: NODE_ENV
