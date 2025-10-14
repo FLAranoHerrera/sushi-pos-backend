@@ -2,8 +2,11 @@
 services:
   - type: web
     name: sushi-pos-backend
-    env: docker
+    env: node
     plan: starter
+    runtime: node20
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
     healthCheckPath: /docs
     envVars:
       - key: NODE_ENV
