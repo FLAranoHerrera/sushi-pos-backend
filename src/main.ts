@@ -14,6 +14,7 @@ async function bootstrap() {
   const envPath = path.resolve(process.cwd(), `.env.${envFile}`);
   
   console.log(`🔧 Cargando configuración desde: .env.${envFile}`);
+  console.log(`🚀 Iniciando aplicación sin prefijo /api para compatibilidad con frontend`);
   
   // Cargar variables de entorno
   dotenv.config({ path: envPath });
