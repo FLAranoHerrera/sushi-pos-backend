@@ -17,6 +17,7 @@ async function bootstrap() {
   console.log(`🚀 Iniciando aplicación con prefijo /api - VERSIÓN FINAL`);
   console.log(`📡 Rutas disponibles: /api/auth/login, /api/auth/signup, /api/health`);
   console.log(`🔄 FORZANDO DESPLIEGUE LIMPIO - ${new Date().toISOString()}`);
+  console.log(`🔥 ULTIMO INTENTO - ${Math.random().toString(36).substring(7)}`);
   
   // Cargar variables de entorno
   dotenv.config({ path: envPath });
