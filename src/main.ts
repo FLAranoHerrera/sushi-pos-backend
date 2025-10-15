@@ -50,7 +50,7 @@ async function bootstrap() {
   );
 
   // Configurar prefijo global para API
-  // app.setGlobalPrefix('api'); // Comentado para mantener rutas sin prefijo /api
+  app.setGlobalPrefix('api');
 
   // Configurar filtros e interceptores globales
   app.useGlobalFilters(new AllExceptionsFilter());
