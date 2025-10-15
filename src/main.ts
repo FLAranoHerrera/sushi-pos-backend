@@ -16,6 +16,7 @@ async function bootstrap() {
   console.log(`🔧 Cargando configuración desde: .env.${envFile}`);
   console.log(`🚀 Iniciando aplicación con prefijo /api - VERSIÓN FINAL`);
   console.log(`📡 Rutas disponibles: /api/auth/login, /api/auth/signup, /api/health`);
+  console.log(`🔄 FORZANDO DESPLIEGUE LIMPIO - ${new Date().toISOString()}`);
   
   // Cargar variables de entorno
   dotenv.config({ path: envPath });
