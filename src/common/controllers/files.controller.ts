@@ -16,7 +16,6 @@ import { JwtAuthGuard } from '../../modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../modules/auth/guards/roles.guard';
 import { Roles } from '../../modules/auth/decorators/roles.decorators';
 import { UploadFileDto, UploadMultipleFilesDto } from '../dto/upload-file.dto';
-import { FileValidationPipe } from '../pipes/file-validation.pipe';
 
 @ApiTags('Files')
 @ApiBearerAuth('access-token')

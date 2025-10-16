@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { Repository, Between, IsNull } from 'typeorm';
 import { AttendanceRecord, AttendanceStatus } from '../entities/attendance.entity';
-import { CreateAttendanceDto, UpdateAttendanceDto } from '../dto/create-attendance.dto';
+import { UpdateAttendanceDto } from '../dto/create-attendance.dto';
 
 @Injectable()
 export class AttendanceService {
@@ -46,7 +46,7 @@ export class AttendanceService {
     const record = await this.attendanceRepository.findOne({
       where: { 
         employee: { id: employeeId }, 
-        checkOut: null,
+        checkOut: IsNull(),
         date: Between(today, tomorrow)
       },
     });

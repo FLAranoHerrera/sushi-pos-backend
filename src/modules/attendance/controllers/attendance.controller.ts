@@ -20,7 +20,7 @@ import {
   ApiBearerAuth 
 } from '@nestjs/swagger';
 import { AttendanceService } from '../services/attendance.service';
-import { CreateAttendanceDto, UpdateAttendanceDto } from '../dto/create-attendance.dto';
+import { UpdateAttendanceDto } from '../dto/create-attendance.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { Roles } from '../../auth/decorators/roles.decorator';
@@ -64,7 +64,6 @@ export class AttendanceController {
   @ApiOperation({ 
     summary: 'Registrar salida de empleado',
     description: 'Registra la hora de salida de un empleado para el día actual'
-  })
   })
   @ApiParam({ 
     name: 'employeeId', 
