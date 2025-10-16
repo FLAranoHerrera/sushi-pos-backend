@@ -9,6 +9,7 @@ import { OrderItem } from '../modules/orders/entities/order-item.entity';
 import { Subcategory } from '../modules/subcategories/entities/subcategory.entity';
 import { Category } from '../modules/categories/entities/category.entity';
 import { Extra } from '../modules/extras/entities/extra.entity';
+import { AttendanceRecord } from '../modules/attendance/entities/attendance.entity';
 
 export const typeOrmConfig = (configService: ConfigService): DataSourceOptions => {
   // Verificar si tenemos DATABASE_URL (connection string) o variables individuales
@@ -19,7 +20,7 @@ export const typeOrmConfig = (configService: ConfigService): DataSourceOptions =
     return {
       type: 'postgres',
       url: databaseUrl,
-      entities: [User, Role, Product, Order, OrderItem, Subcategory, Category, Extra],
+      entities: [User, Role, Product, Order, OrderItem, Subcategory, Category, Extra, AttendanceRecord],
       synchronize: false, // Deshabilitado en producción para mayor seguridad
       logging: configService.get<string>('NODE_ENV') === 'development' ? ['query', 'error', 'schema'] : ['error'],
       logger: 'advanced-console',
@@ -36,7 +37,7 @@ export const typeOrmConfig = (configService: ConfigService): DataSourceOptions =
       username: configService.get<string>('DB_USERNAME'),
       password: configService.get<string>('DB_PASSWORD'),
       database: configService.get<string>('DB_NAME'),
-      entities: [User, Role, Product, Order, OrderItem, Subcategory, Category, Extra],
+      entities: [User, Role, Product, Order, OrderItem, Subcategory, Category, Extra, AttendanceRecord],
       synchronize: configService.get<string>('NODE_ENV') === 'development',
       logging: configService.get<string>('NODE_ENV') === 'development' ? ['query', 'error', 'schema'] : ['error'],
       logger: 'advanced-console',
