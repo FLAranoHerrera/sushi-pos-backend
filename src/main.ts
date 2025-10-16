@@ -18,6 +18,7 @@ async function bootstrap() {
   console.log(`📡 Rutas disponibles: /api/auth/login, /api/auth/signup, /api/health`);
   console.log(`🔄 FORZANDO DESPLIEGUE LIMPIO - ${new Date().toISOString()}`);
   console.log(`🔥 ULTIMO INTENTO - ${Math.random().toString(36).substring(7)}`);
+  console.log(`📊 ATTENDANCE MODULE LOADED - ${new Date().toISOString()}`);
   
   // Cargar variables de entorno
   dotenv.config({ path: envPath });
