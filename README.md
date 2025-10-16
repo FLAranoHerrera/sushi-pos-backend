@@ -43,6 +43,7 @@ _Construido con **NestJS + PostgreSQL + TypeORM + Stripe**, documentado con **Sw
 | ➕ **Extras** | Adiciones opcionales en los productos |
 | 🧾 **Orders** | Creación y detalle de pedidos |
 | 📁 **Files** | Carga y gestión de imágenes con Cloudinary |
+| ⏰ **Attendance** | Sistema de control de asistencia de empleados |
 
 ---
 
@@ -128,7 +129,8 @@ sushi-pos-backend/
 │   │   ├── subcategories/
 │   │   ├── extras/
 │   │   ├── products/
-│   │   └── orders/
+│   │   ├── orders/
+│   │   └── attendance/
 │   ├── common/
 │   │   ├── controllers/
 │   │   ├── services/
@@ -168,6 +170,11 @@ User → Order → OrderItem
 | `GET`  | `/extras`      | Listar extras disponibles |
 | `POST` | `/products/:id/image` | Subir imagen a producto |
 | `POST` | `/files/upload` | Subir imagen general |
+| `POST` | `/attendance/check-in/:employeeId` | Registrar entrada |
+| `POST` | `/attendance/check-out/:employeeId` | Registrar salida |
+| `GET`  | `/attendance/employee/:employeeId` | Historial por empleado |
+| `GET`  | `/attendance` | Todos los registros (ADMIN) |
+| `GET`  | `/attendance/stats/overview` | Estadísticas (ADMIN) |
 
 🧪 Scripts útiles
 
@@ -200,8 +207,36 @@ El sistema incluye integración completa con **Cloudinary** para la gestión de 
 
 ---
 
+## ⏰ Módulo de Asistencia (Attendance)
+
+El sistema incluye un módulo completo de control de asistencia para empleados:
+
+### **Funcionalidades:**
+- ✅ **Check-in/Check-out** automático de empleados
+- ✅ **Cálculo automático** de horas trabajadas
+- ✅ **Estados automáticos** (on_time, late, absent, extra_hours)
+- ✅ **Historial completo** por empleado
+- ✅ **Estadísticas generales** para administradores
+- ✅ **Gestión completa** (solo ADMIN)
+
+### **Endpoints de Asistencia:**
+- `POST /api/attendance/check-in/:employeeId` - Registrar entrada
+- `POST /api/attendance/check-out/:employeeId` - Registrar salida
+- `GET /api/attendance/employee/:employeeId` - Historial por empleado
+- `GET /api/attendance` - Todos los registros (solo ADMIN)
+- `GET /api/attendance/stats/overview` - Estadísticas (solo ADMIN)
+- `PUT /api/attendance/:id` - Actualizar registro (solo ADMIN)
+- `DELETE /api/attendance/:id` - Eliminar registro (solo ADMIN)
+
+### **Permisos por Rol:**
+- **MESERO**: Puede hacer check-in/check-out y ver su propio historial
+- **ADMIN**: Acceso completo a todas las funcionalidades
+
+---
+
 ## 🌱 Próximas mejoras
 ✅ ~~Integración con Cloudinary para carga de imágenes~~ **COMPLETADO**
+✅ ~~Módulo de Asistencia (Attendance)~~ **COMPLETADO**
 🚧 Implementación de seeders automáticos (categorías, productos, roles)
 🐳 Configuración de Docker Compose para entorno completo (API + DB)
 🧾 Generación de reportes y dashboard de ventas
