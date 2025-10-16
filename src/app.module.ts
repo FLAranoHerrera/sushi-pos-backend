@@ -15,6 +15,7 @@ import { RolesModule } from './modules/roles/roles.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { SubcategoriesModule } from './modules/subcategories/subcategories.module';
 import { ExtrasModule } from './modules/extras/extras.module';
+import { AttendanceModule } from './modules/attendance/attendance.module';
 import { FilesModule } from './common/modules/files.module';
 
 @Module({
@@ -42,6 +43,7 @@ import { FilesModule } from './common/modules/files.module';
     CategoriesModule,
     SubcategoriesModule,
     ExtrasModule,
+    AttendanceModule,
     FilesModule,
     
   ],

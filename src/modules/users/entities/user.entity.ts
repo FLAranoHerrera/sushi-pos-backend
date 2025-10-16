@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Role } from '../../roles/entities/roles.entity';
 import { Order } from '../../orders/entities/order.entity';
+import { AttendanceRecord } from '../../attendance/entities/attendance.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('users')
@@ -31,6 +32,9 @@ export class User {
 
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
+
+  @OneToMany(() => AttendanceRecord, (attendance) => attendance.employee)
+  attendanceRecords: AttendanceRecord[];
 
    @CreateDateColumn()
   createdAt: Date;
